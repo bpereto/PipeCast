@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -168,43 +169,48 @@ public class UpnpDevice extends Device {
     }
 
     @Override
-    public void play(String url, String title, String creator, MediaFormat mediaFormat) throws IOException, XmlWriterException {
-        HttpURLConnection connection = (HttpURLConnection) avTransportUrl.openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "text/xml;charset=utf-8");
-        connection.setRequestProperty("Soapaction", "\"urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI\"");
-        connection.setDoOutput(true);
-        OutputStream outputStream = connection.getOutputStream();
+    public void play(String url, String title, String creator, MediaFormat mediaFormat) {
 
-        XmlWriter writer = PipeCast.getXmlWriter();
-        writer.writeStartDocument("utf-8", "1.0");
-        writer.writeStartElement("s:Envelope");
-        writer.writeAttribute("s:encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/");
-        writer.writeNamespace("s", "http://schemas.xmlsoap.org/soap/envelope/");
-        writer.writeStartElement("s:Body");
-        writer.writeStartElement("u:SetAVTransportURI");
-        writer.writeNamespace("u", "urn:schemas-upnp-org:service:AVTransport:1");
-        writer.writeStartElement("InstanceID");
-        writer.writeCharacters("0");
-        writer.writeEndElement();
-        writer.writeStartElement("CurrentURI");
-        writer.writeCharacters(url);
-        writer.writeEndElement();
-        writer.writeStartElement("CurrentURIMetaData");
-        writer.writeCharacters(createDidl(url, title, creator, mediaFormat));
-        writer.writeEndElement();
-        writer.writeEndElement();
-        writer.writeEndElement();
-        writer.writeEndElement();
-        writer.writeEndDocument();
+        try {
+            HttpURLConnection connection = (HttpURLConnection) avTransportUrl.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "text/xml;charset=utf-8");
+            connection.setRequestProperty("Soapaction", "\"urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI\"");
+            connection.setDoOutput(true);
+            OutputStream outputStream = connection.getOutputStream();
 
-        byte[] xml = writer.end().getBytes();
-        outputStream.write(xml);
-        outputStream.close();
-        connection.getInputStream();
+            XmlWriter writer = PipeCast.getXmlWriter();
+            writer.writeStartDocument("utf-8", "1.0");
+            writer.writeStartElement("s:Envelope");
+            writer.writeAttribute("s:encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/");
+            writer.writeNamespace("s", "http://schemas.xmlsoap.org/soap/envelope/");
+            writer.writeStartElement("s:Body");
+            writer.writeStartElement("u:SetAVTransportURI");
+            writer.writeNamespace("u", "urn:schemas-upnp-org:service:AVTransport:1");
+            writer.writeStartElement("InstanceID");
+            writer.writeCharacters("0");
+            writer.writeEndElement();
+            writer.writeStartElement("CurrentURI");
+            writer.writeCharacters(url);
+            writer.writeEndElement();
+            writer.writeStartElement("CurrentURIMetaData");
+            writer.writeCharacters(createDidl(url, title, creator, mediaFormat));
+            writer.writeEndElement();
+            writer.writeEndElement();
+            writer.writeEndElement();
+            writer.writeEndElement();
+            writer.writeEndDocument();
 
-        play();
+            byte[] xml = writer.end().getBytes();
+            outputStream.write(xml);
+            outputStream.close();
+            connection.getInputStream();
+
+            play();
+        } catch (XmlWriterException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     void setNextAvTransportUri() throws IOException {
@@ -253,35 +259,45 @@ public class UpnpDevice extends Device {
         }
     }
 
-    private void pause() throws IOException, XmlWriterException {
-        HttpURLConnection connection = (HttpURLConnection) avTransportUrl.openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "text/xml;charset=utf-8");
-        connection.setRequestProperty("Soapaction", "\"urn:schemas-upnp-org:service:AVTransport:1#Pause\"");
-        OutputStream outputStream = connection.getOutputStream();
+    public void pause() {
+        HttpURLConnection connection = null;
 
-        XmlWriter writer = PipeCast.getXmlWriter();
+        try {
+            connection = (HttpURLConnection) avTransportUrl.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "text/xml;charset=utf-8");
+            connection.setRequestProperty("Soapaction", "\"urn:schemas-upnp-org:service:AVTransport:1#Pause\"");
+            OutputStream outputStream = connection.getOutputStream();
 
-        writer.writeStartDocument("utf-8", "1.0");
-        writer.writeStartElement("s:Envelope");
-        writer.writeAttribute("s:encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/");
-        writer.writeNamespace("s", "http://schemas.xmlsoap.org/soap/envelope/");
-        writer.writeStartElement("s:Body");
-        writer.writeStartElement("u:Pause");
-        writer.writeNamespace("u", "urn:schemas-upnp-org:service:AVTransport:1");
-        writer.writeStartElement("InstanceID");
-        writer.writeCharacters("0");
-        writer.writeEndElement();
-        writer.writeEndElement();
-        writer.writeEndElement();
-        writer.writeEndElement();
-        writer.writeEndDocument();
+            XmlWriter writer = PipeCast.getXmlWriter();
 
-        byte[] xml = writer.end().getBytes();
-        outputStream.write(xml);
-        outputStream.close();
-        connection.getInputStream();
+            writer.writeStartDocument("utf-8", "1.0");
+            writer.writeStartElement("s:Envelope");
+            writer.writeAttribute("s:encodingStyle", "http://schemas.xmlsoap.org/soap/encoding/");
+            writer.writeNamespace("s", "http://schemas.xmlsoap.org/soap/envelope/");
+            writer.writeStartElement("s:Body");
+            writer.writeStartElement("u:Pause");
+            writer.writeNamespace("u", "urn:schemas-upnp-org:service:AVTransport:1");
+            writer.writeStartElement("InstanceID");
+            writer.writeCharacters("0");
+            writer.writeEndElement();
+            writer.writeEndElement();
+            writer.writeEndElement();
+            writer.writeEndElement();
+            writer.writeEndDocument();
+
+            byte[] xml = writer.end().getBytes();
+            outputStream.write(xml);
+            outputStream.close();
+            connection.getInputStream();
+        } catch (XmlWriterException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Element getTransportInfo() throws IOException, XmlWriterException, ParserConfigurationException, SAXException {

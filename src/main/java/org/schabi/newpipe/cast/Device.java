@@ -22,6 +22,8 @@ public abstract class Device {
 
     public abstract void play(String url, String title, String creator, MediaFormat mediaFormat) throws IOException, XmlWriterException;
 
+    public abstract void pause() throws IOException;
+
     public abstract void addToQueue(String url, String title, String creator, MediaFormat mediaFormat) throws IOException, XmlWriterException;
 
     public abstract void playPause() throws IOException, XmlWriterException, ParserConfigurationException, SAXException;

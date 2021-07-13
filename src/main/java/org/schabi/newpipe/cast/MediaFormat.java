@@ -4,7 +4,8 @@ public enum MediaFormat {
     MUSIC_MP3   ("audio/mpeg",  "object.item.audioItem.musicTrack", "MP3"),
     MUSIC_M4A   ("audio/mp4",   "object.item.audioItem.musicTrack", "AAC_ISO"),
     MUSIC_WEBM  ("audio/webm",  "object.item.audioItem.musicTrack", null),
-    MOVIE_WEBM  ("video/webm",  "object.item.videoItem.movie", null);
+    MOVIE_WEBM  ("video/webm",  "object.item.videoItem.movie", null),
+    MOVIE_MPEG  ("video/mpeg", "", null);
     // TODO: add all formats we need
 
     public String mimeType;

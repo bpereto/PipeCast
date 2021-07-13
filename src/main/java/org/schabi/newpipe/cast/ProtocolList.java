@@ -1,9 +1,11 @@
 package org.schabi.newpipe.cast;
 
+import org.schabi.newpipe.cast.protocols.chromecast.ChromeCastProtocol;
 import org.schabi.newpipe.cast.protocols.upnp.UpnpProtocol;
 
 public enum ProtocolList {
-    Upnp(new UpnpProtocol(0, "UPnP"));
+    Upnp(new UpnpProtocol(0, "UPnP")),
+    Cast(new ChromeCastProtocol(1, "Cast v2"));
 
     private final CastingProtocol protocol;
 

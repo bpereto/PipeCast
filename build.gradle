@@ -7,4 +7,17 @@ repositories {
 
 dependencies {
     implementation 'com.github.wb9688:nanohttpd:f23888e8b63baa6a3010d1e75ebdf3a48d14147d'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    testImplementation 'junit:junit:4.13.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.2.1'
+    compile 'su.litvak.chromecast:api-v2:0.11.3'
+}
+
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
